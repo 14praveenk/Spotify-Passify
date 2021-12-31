@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+  <head>
+    <title>COVID-PASSify your Music</title>
+    <link href="assets/styles.css" rel="stylesheet" />
+    <style type="text/css">
+      #login, #loggedin {
+        display: none;
+      }
+      .text-overflow {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 500px;
+      }
+    </style>
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+    crossorigin="anonymous"
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet" crossorigin="anonymous">
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"
+  ></script>
+  <script src="./script.js"></script>
+  </head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <body class="home" id="bghome">
+    <div id="login" class="container-home text-center text-white mt-5">
+      <div class="fs-1 titleText">COVID Passify</div>
+      <div class="fs-3 subText my-3">TURN YOUR SPOTIFY INTO A COVID TRAVEL PASS.</div>
+      <div class="fs-3 subText my-3">
+        <span
+          class="txt-rotate"
+          data-period="2000"
+          data-rotate='[ "No sign-up needed.", "Share your profile quickly.", "Free."]'
+        ></span>
+      </div>
+      <div class="my-5">
+        <button id="login-button" type="button" class="btn btn-success fs-3"> 
+         <span class="subText">Log in with Spotify</span>
+        </button>
+      </div>
+      <div class="fs-5 subText my-3">Inspired by <a class="aText" href="https://receiptify.herokuapp.com">Recepitify</a>.<br>Made by <a class="aText" href="https://github.com/pravsterrr">Praveen.</a><br>Big up the NHS! ❤️</div>
+    </div>
+    <div id="saveBox" class="container-lg mt-2 pt-2">
+      <div id="loggedin" class="text-white">
+        <div id="loggein">
+        <div id="user-profile" class="mx-4 py-5">
+        </div>
+        <div id="oauth">
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button class="btn my-3 btn-outline-primary" onclick="Printdiv()">Download My Pass!</button>
+      </div>
+    </div>
+    </div>
+
+    <script id="user-profile-template" type="text/x-handlebars-template">
+            <h2 style="display: flex;"><img crossorigin="anonymous" style="height:1em; margin-right:0.5em" class="d-flex align-self-center mr-3 border border-white rounded-circle" src="{{result1.images.0.url}}" />COVID Pass</h2>
+            <hr class="my-2"/>
+            <div class="media-body">
+          <dl class="dl-horizontal">
+            <dt class="h3">NHS COVID Pass Travel</dt>
+            <div class="result">
+            <div class="fs-4"><dt>NAME</dt><dd class="clearfix">{{result1.display_name}}</dd></div>
+            <div class="fs-4"><dt>FOLLOWERS</dt><dd style="text-align:right;">{{result1.followers.total}}</dd></div>
+          </div>
+            <hr class="my-2"/>
+              <div class="fs-4"><dt>TOP TRACK THIS MONTH</dt><dd class="clearfix">{{result2.name}}</dd></div>
+            <hr class="my-2"/>
+            <div class="fs-4" style="text-align: right;">
+            <dt>VALID ON</dt><dd class="date">{{date}}</dd></div>
+            <div class="my-3 text-center" >
+            <img style="max-width:10em; padding:0.5em; background-color:white;" src="{{qrcodeimg}}"/>
+          </div>
+            <dt style="display:flex;" class="justify-content-center fs-3"><img style="margin-right:0.5em" src="./assets/security_white_24dp.svg" />Saved to this device</dt>
+          </dl>
+        </div>
+      </div>
+    </script>
+    <script id="oauth-template" type="text/x-handlebars-template">
+      <h2>oAuth info</h2>
+      <dl class="dl-horizontal">
+        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
+      </dl>
+    </script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="qrious.min.js"></script>
+    <script src="dom-to-image.min.js"></script>
+    <script>
+      (function() {
+
+        var stateKey = 'spotify_auth_state';
+
+        /**
+         * Obtains parameters from the hash of the URL
+         * @return Object
+         */
+        function getHashParams() {
+          var hashParams = {};
+          var e, r = /([^&;=]+)=?([^&;]*)/g,
+              q = window.location.hash.substring(1);
+          while ( e = r.exec(q)) {
+             hashParams[e[1]] = decodeURIComponent(e[2]);
+          }
+          return hashParams;
+        }
+
+        /**
+         * Generates a random string containing numbers and letters
+         * @param  {number} length The length of the string
+         * @return {string} The generated string
+         */
+        function generateRandomString(length) {
+          var text = '';
+          var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+          for (var i = 0; i < length; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+          }
+          return text;
+        };
+
+        var userProfileSource = document.getElementById('user-profile-template').innerHTML,
+            userProfileTemplate = Handlebars.compile(userProfileSource),
+            userProfilePlaceholder = document.getElementById('user-profile');
+
+            oauthSource = document.getElementById('oauth-template').innerHTML,
+            oauthTemplate = Handlebars.compile(oauthSource),
+            oauthPlaceholder = document.getElementById('oauth');
+
+        var params = getHashParams();
+
+        var access_token = params.access_token,
+            state = params.state,
+            storedState = localStorage.getItem(stateKey);
+
+        if (access_token && (state == null || state !== storedState)) {
+          window.location = window.location.href.split("#")[0];
+        } else {
+          localStorage.removeItem(stateKey);
+          if (access_token) {
+            var result1;
+            var result2;
+            $.when(
+              $.ajax({
+                url: 'https://api.spotify.com/v1/me',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token
+                },
+                success: function(response) {
+                  result1 = response;
+
+
+                }
+            }),
+            $.ajax({
+                url: 'https://api.spotify.com/v1/me/top/tracks?limit=1&time_range=short_term',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token,
+                  'Content-Type': 'application/json'
+                },
+                success: function(response) {
+                  result2 = response.items[0];
+}}),
+            ).then(function(){
+              const d = new Date();
+                  var qr = new QRious();
+                  qr.set({
+                    size: 500,
+                    value: result1.external_urls.spotify
+                  })
+                  datadate = {result1, result2, date:(d.getUTCDate() + ' ' + (d.toLocaleString('default', { month: 'long' })) + ' ' + d.getUTCFullYear()), qrcodeimg: qr.toDataURL('image/jpeg')}; 
+                  userProfilePlaceholder.innerHTML = userProfileTemplate(datadate);
+                  $('#login').hide();
+                  document.getElementById("bghome").style.background="white";
+                  $('#loggedin').show();
+            });
+          } else {
+              $('#login').show();
+              $('#loggedin').hide();
+          }
+
+          document.getElementById('login-button').addEventListener('click', function() {
+
+            var client_id = '5836c760e2474c65a6549e278cfbbd70'; // Your client id
+            var redirect_uri = 'https://pass.praveenk.me/'; // Your redirect uri
+
+            var state = generateRandomString(16);
+
+            localStorage.setItem(stateKey, state);
+            var scope = 'user-read-private user-top-read';
+
+            var url = 'https://accounts.spotify.com/authorize';
+            url += '?response_type=token';
+            url += '&client_id=' + encodeURIComponent(client_id);
+            url += '&scope=' + encodeURIComponent(scope);
+            url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
+            url += '&state=' + encodeURIComponent(state);
+
+            window.location = url;
+          }, false);
+        }
+      })();
+
+      function Printdiv()
+{
+    domtoimage.toJpeg(document.getElementById("loggein"), { quality: 0.95 })
+    .then(function (dataUrl) {
+        var link = document.createElement('a');
+        link.download = 'music-pass.jpeg';
+        link.href = dataUrl;
+        link.click();
+    });
+
+}
+
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    //after creating link you should delete dynamic link
+    //clearDynamicLink(link); 
+}
+    </script>
+    <style>
+      .home {
+        background: rgb(63,94,251);
+background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(73,93,244,1) 0%, rgba(97,90,225,1) 0%, rgba(122,87,206,1) 0%, rgba(154,82,182,1) 100%, rgba(162,81,176,1) 100%, rgba(176,80,165,1) 100%, rgba(198,77,148,1) 100%, rgba(252,70,107,1) 100%);
+      }
+    </style>
+</html>
