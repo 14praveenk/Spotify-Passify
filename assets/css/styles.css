@@ -1,0 +1,77 @@
+.home {
+  background: rgb(63, 94, 251);
+  background: linear-gradient(
+    90deg,
+    rgba(63, 94, 251, 1) 0%,
+    rgba(73, 93, 244, 1) 0%,
+    rgba(97, 90, 225, 1) 0%,
+    rgba(122, 87, 206, 1) 0%,
+    rgba(154, 82, 182, 1) 100%,
+    rgba(162, 81, 176, 1) 100%,
+    rgba(176, 80, 165, 1) 100%,
+    rgba(198, 77, 148, 1) 100%,
+    rgba(252, 70, 107, 1) 100%
+  );
+}
+#login,
+#loggedin {
+  display: none;
+}
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 500px;
+}
+#loggein {
+  background-color: rgb(0, 94, 184);
+  border-radius: 25px;
+}
+.aText {
+  text-decoration: none;
+  color: #ccffff;
+}
+.aText:hover {
+  color: white;
+}
+.titleText {
+  font-weight: bold;
+}
+.subText {
+  font-weight: 300;
+}
+#login-button {
+  border-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+
+  padding: 0.5em;
+  border-radius: 15px;
+  background-color: rgb(29, 185, 84);
+}
+#login {
+  font-family: "Montserrat", sans-serif;
+  font-size: rfs(10em);
+}
+.result:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.result div {
+  float: left;
+}
+.result div:last-child {
+  float: right;
+}
+
+dt {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  font-size: 0.8em;
+}
+dd {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+}
