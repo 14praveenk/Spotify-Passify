@@ -42,7 +42,7 @@
             <hr class="my-2"/>
             <div class="media-body">
           <dl class="dl-horizontal">
-            <dt class="h3">Music COVID Pass Travel</dt>
+            <dt class="h3">COVID Pass Travel</dt>
             <div class="result">
             <div class="fs-4"><dt>NAME</dt><dd class="clearfix">{{result1.display_name}}</dd></div>
             <div class="fs-4"><dt>FOLLOWERS</dt><dd style="text-align:right;">{{result1.followers.total}}</dd></div>
@@ -204,7 +204,7 @@
 
       function Printdiv() {
         domtoimage
-          .toJpeg(document.getElementById("loggein"), { quality: 0.95 })
+          .toJpeg(document.getElementById("loggein"), { quality: 1 })
           .then(function (dataUrl) {
             var link = document.createElement("a");
             link.download = "music-pass.jpeg";
