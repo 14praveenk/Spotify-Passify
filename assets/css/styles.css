@@ -40,6 +40,9 @@
 .subText {
   font-weight: 300;
 }
+.save{
+  font-size: rfs(1em);
+}
 #login-button {
   border-color: transparent;
   -webkit-box-shadow: none;
@@ -51,7 +54,6 @@
 }
 #login {
   font-family: "Montserrat", sans-serif;
-  font-size: rfs(10em);
 }
 .result:after {
   content: "";

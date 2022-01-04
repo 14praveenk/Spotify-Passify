@@ -55,7 +55,7 @@
             <div class="my-3 text-center" >
             <img style="max-width:10em; padding:0.5em; background-color:white;" src="{{qrcodeimg}}"/>
           </div>
-            <dt style="display:flex;" class="justify-content-center fs-3"><img style="margin-right:0.5em" src="./assets/security_white_24dp.svg" />Saved to this device</dt>
+            <dt style="display:flex;" class="justify-content-center fs-6"><img style="height:1.3em; width:1.3em; margin-right:0.3em" src="./assets/security_white_18dp.svg" />Saved to this device</dt>
           </dl>
         </div>
       </div>
@@ -201,16 +201,39 @@
           );
         }
       })();
+      function generateImage(){
+        const scale = 1.9;
+        const node = document.getElementById("loggein");
+        return new Promise(resolve => {
+          domtoimage
+          .toPng(node, { 
+            height: node.offsetHeight * scale,
+    width: node.offsetWidth * scale,
+    style: {
+    transform: "scale(" + scale + ")",
+    transformOrigin: "top left",
+    width: node.offsetWidth + "px",
+    height: node.offsetHeight + "px"}
 
-      function Printdiv() {
-        domtoimage
-          .toJpeg(document.getElementById("loggein"), { quality: 1 })
+           })
           .then(function (dataUrl) {
             var link = document.createElement("a");
-            link.download = "music-pass.jpeg";
+            link.download = "music-pass.png";
             link.href = dataUrl;
-            link.click();
+            return resolve(link);
           });
+        })
       }
+      function Printdiv() {
+        generateImage().then(() => {
+    generateImage().then(() => {
+        generateImage().then((link) => {
+            link.click();
+        })
+    })
+})
+
+
+}
     </script>
 </html>
