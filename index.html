@@ -165,7 +165,7 @@
                   d.toLocaleString("default", { month: "long" }) +
                   " " +
                   d.getUTCFullYear(),
-                qrcodeimg: qr.toDataURL("image/jpeg"),
+                qrcodeimg: qr.toDataURL(),
               };
               userProfilePlaceholder.innerHTML = userProfileTemplate(datadate);
               $("#login").hide();
