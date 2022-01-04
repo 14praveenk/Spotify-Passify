@@ -206,7 +206,7 @@
         const node = document.getElementById("loggein");
         return new Promise(resolve => {
           domtoimage
-          .toPng(node, { 
+          .toBlob(node, { 
             height: node.offsetHeight * scale,
     width: node.offsetWidth * scale,
     style: {
@@ -216,24 +216,34 @@
     height: node.offsetHeight + "px"}
 
            })
-          .then(function (dataUrl) {
-            var link = document.createElement("a");
-            link.download = "music-pass.png";
-            link.href = dataUrl;
-            return resolve(link);
+          .then(function (blob) {
+            return resolve(blob);
           });
         })
       }
       function Printdiv() {
         generateImage().then(() => {
     generateImage().then(() => {
-        generateImage().then((link) => {
-            link.click();
+        generateImage().then((blob) => {
+          saveFile('music-pass.png',"image/png",blob);
+
         })
     })
 })
 
 
+}
+function saveFile (name, type, data) {
+    if (data !== null && navigator.msSaveBlob)
+        return navigator.msSaveBlob(new Blob([data], { type: type }), name);
+    var a = $("<a style='display: none;'/>");
+    var url = window.URL.createObjectURL(new Blob([data], {type: type}));
+    a.attr("href", url);
+    a.attr("download", name);
+    $("body").append(a);
+    a[0].click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
 }
     </script>
 </html>
